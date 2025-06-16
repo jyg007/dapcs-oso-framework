@@ -1,0 +1,23 @@
+type: oso-config
+version: v1
+spec:
+  app:
+    name: "test" # APP__NAME
+    debug: False # APP__DEBUG
+    entry: "oso.framework.plugin:create_app"
+  logging:
+    level: "info"
+  auth:
+  - type: "oso.framework.auth.mtls" # AUTH__0__TYPE
+    allowlist:                      # AUTH__0__ALLOWLIST
+      component:
+      - "sha256:..."
+  plugin:
+    application: "fireblocks"
+    addons:
+    - type: "oso.framework.plugin.addon.encrypt"
+      key: ""
+  cert:
+    ca: "..."
+    app_crt: "..."
+    app_key: "..."

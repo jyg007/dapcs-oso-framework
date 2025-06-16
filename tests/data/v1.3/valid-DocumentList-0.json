@@ -1,0 +1,16 @@
+{
+    "documents": [
+        {
+            "id": "64dd0bce-8711-4b76-b051-838faa4117a3",
+            "content": "content1",
+            "metadata": {
+                "name": "name1"
+            }
+        },
+        {
+            "id": "4db24570-aa0d-4eb4-8179-66971ff2cff1",
+            "content": "content2"
+        }
+    ],
+    "count": 2
+}

@@ -1,0 +1,85 @@
+[build-system]
+requires = [
+    "setuptools",
+    "setuptools_scm",
+    "wheel",
+]
+build-backend="setuptools.build_meta"
+
+[project]
+dynamic = [ "version" ]
+name = "ibm-oso-framework"
+requires-python = ">= 3.11"
+dependencies = [
+    "cryptography",
+    "flask",
+    "jsonschema",
+    "structlog",
+    "werkzeug",
+    "pydantic",
+    "pydantic-settings",
+    "gunicorn>=23.0.0",
+    "requests",
+    "grpcio>=1.71.0",
+    "protobuf>=5.29.4",
+    "python-pkcs11>=0.7.0",
+    "asn1crypto>=1.5.1",
+]
+
+[project.scripts]
+start-proxy = "oso.framework.entrypoint.nginx:main"
+start-component = "oso.framework.entrypoint.component:main"
+start-mock = "oso.framework.entrypoint.mock:main"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "scm"
+update_changelog_on_bump = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
+[tool.ruff.lint]
+select = ["D", "E", "F"]
+exclude = ["src/oso/framework/plugin/addons/signing_server/generated/*"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
+"docs/*" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.coverage.run]
+omit = [
+    "src/oso/framework/plugin/addons/signing_server/generated/*"
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.9.9",
+    "commitizen",
+    "pre-commit",
+    "pip-tools",
+]
+test = [
+    "pytest",
+    "pytest-mock",
+    "pytest-cov",
+]
+docs = [
+    "sphinx",
+]
+mock = [
+    "requests",
+]
+protoc = [
+    "grpcio-tools",
+]

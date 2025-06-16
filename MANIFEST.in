@@ -1,0 +1,6 @@
+include README.rst
+include Makefile
+include Containerfile
+
+recursive-include contracts *
+recursive-include tests *
