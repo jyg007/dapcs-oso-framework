@@ -3,7 +3,8 @@
 !.gitignore
 !ext
 !Makefile
-<<<<<<< HEAD
-=======
 !play.yml
+<<<<<<< HEAD
 >>>>>>> d3b014c (initial commit)
+=======
+>>>>>>> d0e6dab (chore: removed merge head conflicts)

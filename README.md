@@ -86,7 +86,11 @@ The `contracts/` directory should contain the YAML templates, terraform snippets
 
 1. Render your frontend/backend PodSpecs (`*.yml.tftpl`) with `tpl.*` variables
 2. Generate a Kubernetes ConfigMap containing your plugin's ENV setting
+<<<<<<< HEAD
 3. Encrypt and package the workloadds for HPVS
+=======
+3. Encrypt and package the workloads for HPVS
+>>>>>>> d0e6dab (chore: removed merge head conflicts)
 
 Directory Layout
 
