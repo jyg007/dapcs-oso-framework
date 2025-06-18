@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   oso.framework.plugin.addons
    oso.framework.plugin.api
    oso.framework.plugin.test
 

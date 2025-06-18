@@ -75,7 +75,7 @@ By conforming to `oso.framework.plugin.base.PluginProtocol`, ISV developers only
 ### Clone & Install
 
 ```bash
-git clone https://github.ibm.com/ZaaS/dapcs-oso-framework.git
+git clone https://github.com/IBM/dapcs-oso-framework.git
 cd dapcs-oso-framework
 GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 uv sync   # creates venv & installs ibm-oso-framework entrypoints
 ```
@@ -85,8 +85,8 @@ GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1 uv sync   # creates venv & installs ibm-oso-f
 The `contracts/` directory should contain the YAML templates, terraform snippets, and helper scripts that:
 
 1. Render your frontend/backend PodSpecs (`*.yml.tftpl`) with `tpl.*` variables
-2. Generate a Kubernetes ConfigMap containing you plugin's ENV setting
-3. Encrypt and package the workloadds for HPVS
+2. Generate a Kubernetes ConfigMap containing your plugin's ENV setting
+3. Encrypt and package the workloads for HPVS
 
 Directory Layout
 
@@ -128,8 +128,8 @@ contracts/
 
 To get started, `cd contracts` to read over the contract support in the [README](contracts/README.md) and follow its steps to:
 
-* Populate your `terraform.tfvars`
-* Run `create-frontend.sh`, `create-grep11.sh`, `create-backend.sh`,
+* Create and populate `terraform.tfvars` under the appropriate folders. Examples are available under `terraform.tfvars.template`
+* Run `create-frontend.sh`, `create-grep11.sh`, `create-backend.sh`
 * Verify the encrypted workloads in `output/`
 
 Once the encrypted workloads are generated, return here to continue on the plugin development reading.
@@ -302,7 +302,7 @@ When `start-component` runs, the framework will parse your addon env-vars, valid
 
 ## Authentication
 
-The framework provides a pluggable auth layer so your plugin endpoints are secured out of the box. All that needs to be do is to configure it via environment variables and decorate your view making it nice to have to no TLS boilerplate.
+The framework provides a pluggable auth layer so your plugin endpoints are secured out of the box. All that needs to be done is to configure it via environment variables and decorate your view making it nice to have no TLS boilerplate.
 
 ### 1. How it Works
 
@@ -453,7 +453,7 @@ uv run pytest
 
 ## Mock Iteration
 
-The framework includes a lightweight mock OSO harness to help you excerise plugins thatt will not utilize Framework, hence there is a mock iteration tool to validate their data. This allows for an e2e smoke test of the plugin's HTTP API (`/status` and `/documents` endpoints).
+The framework includes a lightweight mock OSO harness to help you excerise plugins that will not utilize Framework, hence there is a mock iteration tool to validate their data. This allows for an e2e smoke test of the plugin's HTTP API (`/status` and `/documents` endpoints).
 
 To use the mock iteration function, the developer must set environment variables as below before hand:
 
