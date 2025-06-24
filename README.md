@@ -69,8 +69,12 @@ By conforming to `oso.framework.plugin.base.PluginProtocol`, ISV developers only
 * **[`uv`](https://github.com/astral-sh/uv)** CLI helper
 * **[`podman`](https://podman.io/)** (for local kube play)
 * **[`openssl-devel`](https://www.openssl.org)** & `make` (for certs & play)
-* s390x
-* Terraform & HPVS provider (for contract deployment)
+* **[Rust](https://www.rust-lang.org/)**
+* **[Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html)**
+* **[libsodium-devel](https://doc.libsodium.org/installation)**
+* **[gcc & gcc-c++](https://gcc.gnu.org/install/)**
+* **[s390x](https://www.ibm.com/docs/en/linux-on-systems?topic=linux-s390x)**
+* **[Terraform](https://developer.hashicorp.com/terraform/downloads)** & **[HPVS provider](https://registry.terraform.io/providers/IBM-Cloud/hpvs/latest/docs)** (for contract deployment)
 
 ### Clone & Install
 
