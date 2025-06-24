@@ -76,10 +76,10 @@ Additional configurations are defined in modules::
 Notes
 -----
 Addendum
------
+--------
 There is consideration of keeping closed source and providing either a compiled wheel, docker image, or both. This way, we can share code between OSO proper and plugin more easily, making it be more consistent.
 
------
+-------------
 Contributions
------
+-------------
 This repository is maintained by the repository owners. Issues can be created and the repository can be forked with PRs created against the forked repository for suggestions which will be reviewed by the repository owners. Updates to this repo will need to conincide with changes required in the IBM Offline Signing Orchestrator.
