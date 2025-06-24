@@ -12,6 +12,7 @@ This repository contains code that would enable digital assets custodians to qui
 
 - [IBM Offline Signing Orchestrator Framework](#ibm-offline-signing-orchestrator-framework)
   - [Table of Contents](#table-of-contents)
+  - [Documentation](#documentation)
   - [Introduction](#introduction)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -43,6 +44,12 @@ This repository contains code that would enable digital assets custodians to qui
       - [3. Expected Output](#3-expected-output)
   - [Building and Unpacking a Python Wheel File](#building-and-unpacking-a-python-wheel-file)
   - [License](#license)
+
+## Documentation
+
+The complete project documentation, built with Sphinx, is available on GitHub Pages.
+
+[**Explore the Documentation**](https://ibm.github.io/dapcs-oso-framework/)
 
 ## Introduction
 
