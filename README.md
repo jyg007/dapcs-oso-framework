@@ -12,6 +12,7 @@ This repository contains code that would enable digital assets custodians to qui
 
 - [IBM Offline Signing Orchestrator Framework](#ibm-offline-signing-orchestrator-framework)
   - [Table of Contents](#table-of-contents)
+  - [Documentation](#documentation)
   - [Introduction](#introduction)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -41,7 +42,14 @@ This repository contains code that would enable digital assets custodians to qui
       - [1. Start the mock service](#1-start-the-mock-service)
       - [2. Trigger mock iterations using signals](#2-trigger-mock-iterations-using-signals)
       - [3. Expected Output](#3-expected-output)
+  - [Building and Unpacking a Python Wheel File](#building-and-unpacking-a-python-wheel-file)
   - [License](#license)
+
+## Documentation
+
+The complete project documentation, built with Sphinx, is available on GitHub Pages.
+
+[**Explore the Documentation**](https://ibm.github.io/dapcs-oso-framework/)
 
 ## Introduction
 
@@ -69,8 +77,12 @@ By conforming to `oso.framework.plugin.base.PluginProtocol`, ISV developers only
 * **[`uv`](https://github.com/astral-sh/uv)** CLI helper
 * **[`podman`](https://podman.io/)** (for local kube play)
 * **[`openssl-devel`](https://www.openssl.org)** & `make` (for certs & play)
-* s390x
-* Terraform & HPVS provider (for contract deployment)
+* **[`Rust`](https://www.rust-lang.org/)**
+* **[`Cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html)**
+* **[`libsodium-devel`](https://doc.libsodium.org/installation)**
+* **[`gcc & gcc-c++`](https://gcc.gnu.org/install/)**
+* **[`s390x`](https://www.ibm.com/docs/en/linux-on-systems?topic=linux-s390x)**
+* **[`Terraform`](https://developer.hashicorp.com/terraform/downloads)** & **[HPVS provider](https://www.ibm.com/docs/en/hpvs/2.1.x?topic=servers-setting-up-configuring-hyper-protect-virtual)** (for contract deployment)
 
 ### Clone & Install
 
@@ -504,6 +516,60 @@ This confirms that:
 
 * The `/status` and `/documents` endpoints are reachable (You will notice two `Status OK: 200` for both the endpoints).
 * The plugin is correctly ingesting and responding with the expected dataset.
+
+## Building and Unpacking a Python Wheel File
+
+If you need to build a Python wheel (`.whl`) file for this project, perhaps for distribution or inspection, follow these steps:
+
+1. **Install the `wheel` package:**
+    First, ensure you have the `wheel` package installed in your Python environment. You can do this using `uv`:
+
+    ```bash
+    uv pip install wheel
+    ```
+
+2. **Build the wheel file:**
+    Navigate to the root directory of the project and use `uv build` with the `--wheel` flag. This will compile your project into a wheel file and place it in a `dist/` directory.
+
+    ```bash
+    uv build --wheel
+    ```
+
+    You should see output similar to "Successfully built **dist/ibm\_oso\_framework-0.0.0-py3-none-any.whl**" (the version number might vary).
+
+3. **Locate the generated wheel file:**
+    The wheel file will be located in the newly created `dist/` directory. You can confirm its presence by listing the contents:
+
+    ```bash
+    ls dist/
+    ```
+
+    You should see your `.whl` file listed, for example: `ibm_oso_framework-0.0.0-py3-none-any.whl`.
+
+4. **Unpack the wheel file (Optional):**
+    If you want to inspect the contents of the built wheel file, you can unpack it. First, activate your virtual environment if you haven't already:
+
+    ```bash
+    uv venv # If you don't have a virtual environment or it's not active
+    source .venv/bin/activate
+    ```
+
+    Then, navigate into the `dist/` directory and use the `wheel unpack` command:
+
+    ```bash
+    cd dist/
+    wheel unpack ibm_oso_framework-0.0.0-py3-none-any.whl
+    ```
+
+    **Note:** Replace `ibm_oso_framework-0.0.0-py3-none-any.whl` with the actual filename of your wheel if it differs.
+
+    This command will create a new directory (e.g., `ibm_oso_framework-0.0.0/`) containing the unpacked contents of the wheel. You can then navigate into this directory and explore the project structure:
+
+    ```bash
+    cd ibm_oso_framework-0.0.0/
+    ls
+    tree .
+    ```
 
 ## License
 
