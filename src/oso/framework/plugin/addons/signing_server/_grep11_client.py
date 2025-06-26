@@ -110,7 +110,7 @@ class Grep11Client:
 
             pub_key_der_bytes = pub_key.public_bytes(
                 encoding=serialization.Encoding.DER,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo
+                format=serialization.PublicFormat.SubjectPublicKeyInfo,
             )
 
             key_pair.PublicKey = pub_key_der_bytes
@@ -152,12 +152,16 @@ class Grep11Client:
 
     def sign(self, key_type: KeyType, priv_key_bytes: bytes, data: bytes) -> str:
         self.logger.info("Performing a signing")
-        self.logger.debug(f"Signing data: '{data}' with key type: '{key_type.name}'")
+        self.logger.debug(
+            f"Signing data: '{data.hex()}' with key type: '{key_type.name}'"
+        )
+
+        priv_key_blob = server_pb2.KeyBlob(KeyBlobs=[priv_key_bytes])
 
         sign_request = server_pb2.SignSingleRequest(
             Mech=server_pb2.Mechanism(Mechanism=key_type.value.Mechanism),
             Data=data,
-            PrivKey=priv_key_bytes,
+            PrivKey=priv_key_blob,
         )
 
         sign_response = self.stub.SignSingle(sign_request)
