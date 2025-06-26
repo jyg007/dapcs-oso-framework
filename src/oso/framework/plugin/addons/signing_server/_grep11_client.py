@@ -19,6 +19,9 @@ import base64
 import textwrap
 
 from pkcs11 import Mechanism, Attribute
+from asn1crypto import core as asn1_core
+from cryptography.hazmat.primitives.asymmetric import ed25519
+from cryptography.hazmat.primitives import serialization
 
 from ._key import KeyPair, KeyType, SupportedMechanism
 from .generated import server_pb2, server_pb2_grpc
@@ -94,6 +97,23 @@ class Grep11Client:
             PrivateKey=response.PrivKeyBytes,
             PublicKey=response.PubKeyBytes,
         )
+
+        if key_type == KeyType.ED25519:
+            pub_key_bytes = response.PubKey.Attributes[Attribute.EC_POINT]
+
+            pub_key_octet_string = asn1_core.OctetString.load(pub_key_bytes.AttributeB)
+            assert isinstance(pub_key_octet_string, asn1_core.OctetString)
+
+            pub_key_bytes = pub_key_octet_string.native
+
+            pub_key = ed25519.Ed25519PublicKey.from_public_bytes(pub_key_bytes)
+
+            pub_key_der_bytes = pub_key.public_bytes(
+                encoding=serialization.Encoding.DER,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
+            )
+
+            key_pair.PublicKey = pub_key_der_bytes
 
         self.logger.debug(f"Key Pair Generated: {key_pair.to_hex()=}")
 
