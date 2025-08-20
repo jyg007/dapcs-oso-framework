@@ -40,7 +40,7 @@ class HelloWorld(PluginProtocol):
 
                # Loop through each item and generate a Document snippet
                for i, item in enumerate(data, start=1):
-                   doc_id = f"doc{i}"  # generate unique document id
+                   doc_id = item.get("id", "")
                    content = item.get("content", "") 
                    doc = V1_3.Document(
                        id=doc_id,
