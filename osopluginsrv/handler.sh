@@ -12,6 +12,11 @@ while read line; do
     CONTENT_LENGTH=${BASH_REMATCH[1]}
   fi
 done
+# Exit early if Content-Length too small
+if [ "$CONTENT_LENGTH" -lt 10 ]; then
+  echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n"
+  exit 0
+fi
 
 if [ "$METHOD" = "GET" ]; then
   if [ -f "./tx.json" ]; then
@@ -24,7 +29,7 @@ if [ "$METHOD" = "GET" ]; then
 
 elif [ "$METHOD" = "POST" ]; then
   BODY=$(/usr/bin/dd bs=1 count=$CONTENT_LENGTH 2>/dev/null)   # read POST body from stdin
-  echo "$BODY" > /tmp/received.json
+  echo "$BODY" >> /tmp/received.json
 
   echo -e "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"
   echo "{\"status\":\"saved\",\"file\":\"/tmp/received.json\"}"
