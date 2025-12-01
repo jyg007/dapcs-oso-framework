@@ -27,24 +27,24 @@ PYPI_OPTIONS += --secret id=netrc,src=$(PRIVATE_PYPI_NETRC)
 endif
 
 $(LOCAL_PLAY)/runtime: Containerfile
-	docker build -f $< -t oso-runtime --target runtime --iidfile $@ .
+	podman build -f $< -t oso-runtime --target runtime --iidfile $@ .
 
 $(LOCAL_PLAY)/builder: Containerfile $(SRCS)
-	docker build $(PYPI_OPTIONS) -f $< -t oso-builder --target builder --iidfile $@ .
+	podman build $(PYPI_OPTIONS) -f $< -t oso-builder --target builder --iidfile $@ .
 
 $(LOCAL_PLAY)/plugin: Containerfile $(LOCAL_PLAY)/builder
-	docker build -f $< -t oso-plugin --target plugin --iidfile $@ .
+	podman build -f $< -t oso-plugin --target plugin --iidfile $@ .
 
 containerize: $(addprefix $(LOCAL_PLAY)/,runtime builder plugin)
 
 $(LOCAL_PLAY)/oso-runtime.tar: $(LOCAL_PLAY)/runtime
-	docker save --output $@ oso-runtime
+	podman save --output $@ oso-runtime
 
 $(LOCAL_PLAY)/oso-builder.tar: $(LOCAL_PLAY)/builder
-	docker save --output $@ oso-builder
+	podman save --output $@ oso-builder
 
 $(LOCAL_PLAY)/oso-plugin.tar: $(LOCAL_PLAY)/plugin
-	docker save --output $@ oso-plugin
+	podman save --output $@ oso-plugin
 
 $(addsuffix .key,$(addprefix $(LOCAL_PLAY)/,oso-ca app user)): $(LOCAL_PLAY)/%.key:
 	openssl genrsa -out $@ 4096

@@ -86,12 +86,12 @@ class Grep11Client:
             PubKeyTemplate=pub_key_template,
         )
 
-        self.logger.debug(f"GenerateKeyPairRequest: {request}")
+        #self.logger.debug(f"GenerateKeyPairRequest: {request}")
 
         response = self.stub.GenerateKeyPair(request)
         assert isinstance(response, server_pb2.GenerateKeyPairResponse)
 
-        self.logger.info("Received GenerateKeyPair response")
+        #self.logger.info("Received GenerateKeyPair response")
 
         key_pair = KeyPair(
             PrivateKey=response.PrivKeyBytes,
@@ -115,7 +115,7 @@ class Grep11Client:
 
             key_pair.PublicKey = pub_key_der_bytes
 
-        self.logger.debug(f"Key Pair Generated: {key_pair.to_hex()=}")
+        #self.logger.debug(f"Key Pair Generated: {key_pair.to_hex()=}")
 
         return key_pair
 
@@ -220,8 +220,8 @@ class Grep11Client:
             return False
 
     def serialized_key_to_pem(self, key_type: KeyType, pub_key_bytes: bytes) -> str:
-        self.logger.info("Converting Public Key Blob to PEM")
-        self.logger.debug(f"KeyType: '{key_type.name}'")
+#        self.logger.info("Converting Public Key Blob to PEM")
+#        self.logger.debug(f"KeyType: '{key_type.name}'")
 
         b64_encoded = base64.b64encode(pub_key_bytes).decode("ascii")
         wrapped = "\n".join(textwrap.wrap(b64_encoded, 64))
@@ -230,8 +230,8 @@ class Grep11Client:
             f"-----BEGIN PUBLIC KEY-----\n{wrapped}\n-----END PUBLIC KEY-----\n"
         )
 
-        self.logger.debug(
-            f"key type: '{key_type.name}', PUBLIC KEY: {pem_encoded_pub_key}"
-        )
+#        self.logger.debug(
+#            f"key type: '{key_type.name}', PUBLIC KEY: {pem_encoded_pub_key}"
+#        )
 
         return pem_encoded_pub_key

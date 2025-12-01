@@ -297,10 +297,14 @@ class SigningServerAddon(AddonProtocol):
 
     def _save_key_pair(self, key_type: KeyType, key_pair: KeyPair) -> str:
         key_id = str(uuid.uuid4())
-        self._logger.info(f"Saving {key_type.name} key with key ID: '{key_id}' to SQLite")
+        pub_hex = key_pair.PublicKey.hex()
+        self._logger.info(
+           f"Saving key pair: key_type='{key_type.name}', key_id='{key_id}', public_key='{pub_hex}'"
+        )
+
         self._conn.execute(
             "INSERT INTO keys (id, key_type, private_key, public_key) VALUES (?, ?, ?, ?)",
-            (key_id, key_type.name, key_pair.PrivateKey.hex(), key_pair.PublicKey.hex())
+            (key_id, key_type.name, key_pair.PrivateKey.hex(), pub_hex)
         )
         self._conn.commit()
         return key_id
