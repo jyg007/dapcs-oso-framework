@@ -30,7 +30,7 @@ from pydantic import field_validator
 
 from ..main import AddonProtocol, BaseAddonConfig
 from ._key import KeyPair, KeyType
-from ._grep11_client import Grep11Client
+from ._ep11_client import EP11Client
 from oso.framework.data.types import V1_3
 from oso.framework.core.logging import get_logger
 
@@ -49,28 +49,13 @@ class SigningServerConfig(BaseAddonConfig):
 
     Attributes
     ----------
-    ca_cert: str
-        PEM-encoded root certificates as a byte string for gRPC channel
-    client_cert: str
-        PEM-encoded certificate chain as a byte string for gRPC channel
-    client_key: str
-        PEM-encoded certificate chain as a byte string for gRPC channel
-    grep11_endpoint: str
-        Endpoint used to connect to the GREP11 server
     keystore_path: str
         Path of the attached persistent data volume used to store generated
         keys between iterations
     """
-    ca_cert: str
-    client_cert: str
-    client_key: str
-    grep11_endpoint: str = "localhost"
+    hsms: str = ""
     keystore_path: str  # SQLite DB file
     legacy_keystore_dir: str | None = None  # Old filesystem store
-
-    @field_validator("ca_cert", "client_cert", "client_key", mode="before")
-    def _decode_base64_fields(cls, v: str) -> str:
-        return base64.b64decode(v).decode("utf-8")
 
 
 class SigningServerAddon(AddonProtocol):
@@ -122,8 +107,9 @@ class SigningServerAddon(AddonProtocol):
         if self._config.legacy_keystore_dir:
             self._migrate_and_cleanup_legacy(self._config.legacy_keystore_dir)
 
-        self._grep11_client = Grep11Client(self._config)
-        self._grep11_client.health_check()
+        self._ep11_client = EP11Client(self._config)
+
+        self._ep11_client.health_check()
 
     def _migrate_and_cleanup_legacy(self, legacy_dir: str):
         legacy_path = pathlib.Path(legacy_dir)
@@ -200,9 +186,9 @@ class SigningServerAddon(AddonProtocol):
                 The public key in PEM format.
         """
         logging.info(f"Generating new key pair of type {key_type.name}")
-        key_pair = self._grep11_client.generate_key_pair(key_type=key_type)
+        key_pair = self._ep11_client.generate_key_pair(key_type=key_type)
         key_id = self._save_key_pair(key_type, key_pair)
-        pub_key_pem = self._grep11_client.serialized_key_to_pem(
+        pub_key_pem = self._ep11_client.serialized_key_to_pem(
             key_type=key_type, pub_key_bytes=key_pair.PublicKey
         )
         self._logger.info("Finished generating a new key pair")
@@ -244,7 +230,7 @@ class SigningServerAddon(AddonProtocol):
             self._logger.info(f"Could not find key pair for key id: '{key_id}'")
             return None
         key_type, key_pair = keys
-        return self._grep11_client.serialized_key_to_pem(
+        return self._ep11_client.serialized_key_to_pem(
             key_type=key_type, pub_key_bytes=key_pair.PublicKey
         )
 
@@ -328,7 +314,7 @@ class SigningServerAddon(AddonProtocol):
         if not keys:
             raise Exception(f"Could not find key pair for key id: '{key_id}'")
         key_type, key_pair = keys
-        return self._grep11_client.sign(
+        return self._ep11_client.sign(
             key_type=key_type, priv_key_bytes=key_pair.PrivateKey, data=data
         )
 
@@ -361,7 +347,7 @@ class SigningServerAddon(AddonProtocol):
         `oso.framework.data.types.ComponentStatus`
             OSO component status.
         """
-        return self._grep11_client.health_check()
+        return self._ep11_client.health_check()
 
     def verify(self, key_id: str, data: bytes, signature: str) -> bool:
         """
@@ -389,7 +375,7 @@ class SigningServerAddon(AddonProtocol):
         key_type, key_pair = keys
     
         try:
-            return self._grep11_client.verify(
+            return self._ep11_client.verify(
                 key_type=key_type,
                 pub_key_bytes=key_pair.PublicKey,
                 data=data,
