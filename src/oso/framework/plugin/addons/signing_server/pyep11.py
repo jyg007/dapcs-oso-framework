@@ -897,11 +897,8 @@ def normalize_low_s_raw64(sig64: bytes, curve_order=SECP256K1_ORDER) -> bytes:
     s = int.from_bytes(sig64[32:64], "big")
 
     half_n = curve_order // 2
-    if s > half_n:
-        s = curve_order - s
-
-    # Rebuild signature
-    r_bytes = r.to_bytes(32, "big")
-    s_bytes = s.to_bytes(32, "big")
-
-    return r_bytes + s_bytes
+    # Already low-S? Return original bytes
+    if s <= half_n:
+        return sig64
+    s = SECP256K1_ORDER - s
+    return r.to_bytes(32, "big") + s.to_bytes(32, "big")
