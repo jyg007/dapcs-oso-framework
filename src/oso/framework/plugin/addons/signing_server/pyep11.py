@@ -6,7 +6,6 @@ import binascii
 from .ep11mechs import *
 
 from pyasn1.type.univ import ObjectIdentifier
-
 # Load the EP11 shared library
 ep11 = ctypes.CDLL("libep11.so")
 
@@ -884,3 +883,25 @@ def NewOAEPParams(hash_alg: int, mgf: int, source_type: int, source_data: bytes)
     # Return raw bytes like Go's memBytes()
     size = ctypes.sizeof(params)
     return bytes(ctypes.string_at(ctypes.byref(params), size))
+
+
+SECP256K1_ORDER = int(
+    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", 16
+)
+
+def normalize_low_s_raw64(sig64: bytes, curve_order=SECP256K1_ORDER) -> bytes:
+    if len(sig64) != 64:
+        raise ValueError("Signature must be exactly 64 bytes (r||s)")
+
+    r = int.from_bytes(sig64[0:32], "big")
+    s = int.from_bytes(sig64[32:64], "big")
+
+    half_n = curve_order // 2
+    if s > half_n:
+        s = curve_order - s
+
+    # Rebuild signature
+    r_bytes = r.to_bytes(32, "big")
+    s_bytes = s.to_bytes(32, "big")
+
+    return r_bytes + s_bytes

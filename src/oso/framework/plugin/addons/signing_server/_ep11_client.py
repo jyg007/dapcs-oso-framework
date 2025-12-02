@@ -17,7 +17,7 @@
 import base64
 import textwrap
 
-from .pyep11 import Mechanism,Attribute, HsmInit, GetMechanismList, GenerateKeyPair, SignSingle, VerifySingle
+from .pyep11 import Mechanism,Attribute, HsmInit, GetMechanismList, GenerateKeyPair, SignSingle, VerifySingle, normalize_low_s_raw64
 from .ep11constants import *
 from asn1crypto import core as asn1_core
 from pyasn1.codec.der.decoder import decode
@@ -85,8 +85,8 @@ class EP11Client:
             PrivateKey=PrivKeyBytes,
             PublicKey=encode(spki)
         )
-        #S=self.sign( key_type, key_pair.PrivateKey,  b"helloworld")
-        #print(self.verify(key_type, key_pair.PublicKey,b"helloworld",S))
+        S=self.sign( key_type, key_pair.PrivateKey,  b"helloworld")
+        print(self.verify(key_type, key_pair.PublicKey,b"helloworld",S))
         #print(self.serialized_key_to_pem(key_type,key_pair.PublicKey))
         return key_pair
 
@@ -131,12 +131,14 @@ class EP11Client:
             print(f"Error: {error}")
             return None
         else:
-            print(f"Signature: {signature.hex()}")
             self.logger.info("Completed Signing")
     
             self.logger.debug(f"Created signature: {signature=}")
-  
-            return signature.hex()
+            if key_type == KeyType.ED25519:
+                return signature.hex()
+            else:
+#                normalized = normalize_low_s_raw64(signature) 
+                return normalize_low_s_raw64(signature).hex()
     
     def verify(self, key_type: KeyType, pub_key_bytes: bytes, data: bytes, signature: str) -> bool:
         """
