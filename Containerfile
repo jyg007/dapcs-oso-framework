@@ -17,6 +17,8 @@
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal as runtime
 ENV HOME=/app-root VIRTUAL_ENV=/opt/oso/venv
+COPY ./libep11.so.4.1.2 /lib/libep11.so.4
+RUN ln -sf /lib/libep11.so.4 /lib/libep11.so
 RUN rpm -i https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     && microdnf module enable --assumeyes nginx:1.24 \
     && microdnf install --assumeyes --setopt=install_weak_deps=0 \
@@ -48,12 +50,13 @@ WORKDIR /build
 ARG UV_PYTHON=3.12
 ARG UV_PROJECT_ENVIRONMENT=/opt/oso/venv
 ARG UV_PYTHON_INSTALL_DIR=/opt/oso/python
-ARG UV_REQUIRE_HASHES=true
+#ARG UV_REQUIRE_HASHES=true
 COPY pyproject.toml uv.lock ./
-ENV GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+#ENV GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
 RUN uv sync --no-install-project --frozen --compile-bytecode --extra mock
 COPY src src
-RUN uv sync --no-editable --frozen --compile-bytecode --extra mock
+#RUN uv sync --no-editable --frozen --compile-bytecode --extra mock
+RUN uv pip install --python=/opt/oso/venv .
 
 # Example of plugin
 FROM runtime as plugin

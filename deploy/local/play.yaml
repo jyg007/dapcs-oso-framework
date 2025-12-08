@@ -28,9 +28,14 @@ spec:
       envFrom:
         - configMapRef:
             name: local
+      securityContext:
+        privileged: true
       volumeMounts:
         - mountPath: /data
           name: vault_vol
+      volumeDevices:
+        - name: z90crypt
+          devicePath: /dev/z90crypt
     - name: proxy
       image: "localhost/oso-plugin:latest"
       command:
@@ -46,3 +51,6 @@ spec:
       hostPath:
         path: ./data
         type: Directory
+    - name: z90crypt
+      hostPath:
+        path: /dev/z90crypt

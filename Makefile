@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-
 LOCAL_PLAY := deploy/local
 
 SRCS = $(shell find src/ -name '*.py')
@@ -59,9 +58,9 @@ $(LOCAL_PLAY)/%.crt: $(LOCAL_PLAY)/%.csr $(LOCAL_PLAY)/ext
 		-CAcreateserial -out $@ -days 365 \
 		-extensions v3_$(if $(findstring oso-ca,$*),ca,crt) -extfile $(word 2,$^)
 
-APP_NAME ?= helloworld
+APP_NAME ?= fb
 APP_ENTRY ?= oso.framework.plugin:create_app
-PLUGIN_APP ?= helloworld:HelloWorld
+PLUGIN_APP ?= fb.plugin:FBPlugin
 PLUGIN_MODE ?= frontend
 
 REGEN_CM ?= n
@@ -71,10 +70,7 @@ endif
 
 PLUGIN_ADDON_LINES := \
 '  plugin__addons__0__type: "oso.framework.plugin.addons.signing_server"' \
-'  plugin__addons__0__ca_cert : $(PLUGIN__ADDONS__0__CA_CERT)' \
-'  plugin__addons__0__client_key: $(PLUGIN__ADDONS__0__CLIENT_KEY)' \
-'  plugin__addons__0__client_cert: $(PLUGIN__ADDONS__0__CLIENT_CERT)' \
-'  plugin__addons__0__grep11_endpoint: $(PLUGIN__ADDONS__0__GREP11_ENDPOINT)' \
+'  plugin__addons__0__hsms: $(PLUGIN__ADDONS__0__HSMS)' \
 '  plugin__addons__0__keystore_path : $(PLUGIN__ADDONS__0__KEYSTORE_PATH)'
 
 FRONTEND_LINES := \
@@ -136,7 +132,7 @@ play-local-up: $(LOCAL_PLAY)/play.yaml $(LOCAL_PLAY)/cm.yaml \
 	podman tag $$(podman images -q localhost/oso-plugin:latest) localhost/oso-plugin:latest; \
 	podman load -i $(LOCAL_PLAY)/oso-builder.tar; \
 	podman tag $$(podman images -q localhost/oso-builder:latest) localhost/oso-builder:latest; \
-	podman play kube --configmap $(LOCAL_PLAY)/cm.yaml $(LOCAL_PLAY)/play.yaml
+	podman play kube  --configmap $(LOCAL_PLAY)/cm.yaml $(LOCAL_PLAY)/play.yaml
 
 play-local-reload: play-local-down play-local-up
 
